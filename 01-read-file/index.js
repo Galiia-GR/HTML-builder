@@ -4,12 +4,11 @@ const {stdout} = process;
 
 const readingFile = fs.createReadStream(path.join(__dirname, 'text.txt'), 'utf-8');
 
-readingFile.on('err', (err) => {
-  console.log ('opps, something went wrong', err);
-}
-);
-
 readingFile.on('data', data => {
   stdout.write(data);
+}
+);
+readingFile.on('error', (error) => {
+  console.log ('opps, something went wrong', error);
 }
 );
