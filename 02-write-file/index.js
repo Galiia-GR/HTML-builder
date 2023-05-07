@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const {stdin, stdout, exit} = process;
+const readingFile = fs.createReadStream(path.join(__dirname, 'hello.txt'), 'utf-8');
+
 
 fs.writeFile(
   path.join(__dirname, 'hello.txt'),
@@ -11,23 +13,26 @@ fs.writeFile(
       fs.appendFile(path.join(__dirname, 'hello.txt'), data.toString(),
 
         (err) => {
-          if (err) throw new Error ('opps, something went wrong');
+          if (err) throw err;
         }
       );
     });
   });
 
-const readingFile = fs.createReadStream(path.join(__dirname, 'hello.txt'), 'utf-8');
+stdin.on('data', data =>{
+  if (data.toString().trim() === 'exit') {
+    process.exit();
+  } else {
+    readingFile.on('data', data => {
+      stdout.write(data);
+    });
+  }
+});
 
-process.on (process.on('SIGINT', () => {
-  readingFile.on('data', data => {
-    stdout.write(data),
+process.on('exit', () => {
+  stdout.write('Goodbye!');
+});
 
-    (err) => {
-      if (err) throw new Error ('opps, something went wrong');
-    };
-  });
-  stdout.write('Goodbye');
+process.on('SIGINT', () => {
   exit();
-})
-);
+});
