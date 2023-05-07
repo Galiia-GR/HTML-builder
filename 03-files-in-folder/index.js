@@ -1,15 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 const {stdout,exit} = process;
-const folderS = 'secret-folder';
 
-fs.readdir(path.join(__dirname, folderS), (err, files) => {
+fs.readdir(path.join(__dirname, 'secret-folder'), (err, files) => {
   if (err) {
     throw err;
   }
 
   files.forEach((file) => {
-    fs.stat(path.join(__dirname, folderS, file), (err, el)=>{
+    fs.stat(path.join(__dirname, 'secret-folder', file), (err, el)=>{
       if (err){
         throw err;
       }
@@ -17,7 +16,7 @@ fs.readdir(path.join(__dirname, folderS), (err, files) => {
         const name = path.basename(file, '').split('.')[0];
         const extend = path.basename(file, '').split('.')[1];
         const size = el.size/1024;
-        stdout.write(`${name} - ${extend} - ${size}kb`);
+        stdout.write(`${name} - ${extend} - ${size}kb \n`);
       }
     });
   });
