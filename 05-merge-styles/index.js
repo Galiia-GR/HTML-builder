@@ -9,15 +9,19 @@ function collectFile() {
     if (err) throw err;
 
     files.forEach((file) => {
-      fs.stat(path.join(__dirname, 'styles', file), (err, el)=>{
+      fs.stat(path.join(__dirname, 'styles', file), (err, el) => {
         if (err) throw err;
 
         const extend = path.basename(file, '').split('.')[1];
 
-        console.log(extend);
         if(el.isFile() && extend === 'css') {
-console.log(el);
-          };
+          const fileIn = fs.createReadStream(path.join(__dirname, 'styles', file), 'utf-8');
+          fileIn.on('data', data => {
+            fs.appendFile(finalBundle, data, (err) => {
+              if (err) throw err;
+            });
+          });
+        }
       });
     });
   });
