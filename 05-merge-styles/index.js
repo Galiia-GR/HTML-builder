@@ -1,23 +1,27 @@
 const fs = require('fs');
 const path = require('path');
-const fsPromises = fs.promises;
 
 const finalBundle = path.join(__dirname, 'project-dist', 'bundle.css');
 const dirStyles = path.join(__dirname, 'styles');
 
 function collectFile() {
+  fs.readdir(dirStyles, (err, files) => {
+    if (err) throw err;
 
-  fsPromises.readdir(dirStyles.forEach((file) => {
+    files.forEach((file) => {
+      fs.stat(path.join(__dirname, 'styles', file), (err, el)=>{
+        if (err) throw err;
 
-    const streamOut = fs.createReadStream((dirStyles, 'utf-8');
-    const streamIn = fs.createWriteStream((finalBundle, 'utf-8');
+        const extend = path.basename(file, '').split('.')[1];
 
-    if(file.isFile() && file.name.split('.')[1]==='css') {
-      stream.on('data', (chunck)=> fs.createWriteStream(finalBundle,'utf-8');
-      console.log('стрим работает');
-    }
-  })
-  );
+        console.log(extend);
+        if(el.isFile() && extend === 'css') {
+console.log(el);
+          };
+      });
+    });
+  });
 }
+
 
 collectFile();
