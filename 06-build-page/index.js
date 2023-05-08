@@ -25,7 +25,6 @@ function buildFile() {
     if (err) throw err;
   });
 
-
   fs.readdir(dirStyle, (err, files) => {
     if (err) throw err;
 
@@ -46,7 +45,38 @@ function buildFile() {
       });
     });
   });
-
-
-
 }
+//////copyAssets
+const dirBundle = path.join(__dirname, 'project-dist', 'assets');
+const dirAssets = path.join(__dirname, 'assets');
+
+
+const copyDir = (dirAssets, dirBundle) => {
+  fs.mkdir(dirBundle, { recursive: true }, (err) => {
+    if (err) throw err;
+  });
+
+  fs.readdir(dirAssets, { withFileTypes: true }, (err, files) => {
+    if (err) throw err;
+
+    files.forEach((file) => {
+      let oldDirFile = path.join(dirAssets, file.name);
+      let newDirFile = path.join(dirBundle, file.name);
+
+      fs.stat(oldDirFile, (err, item) => {
+        if (err) throw err;
+
+        if (item.isDirectory()) {
+          copyDir(oldDirFile, newDirFile);
+        }
+        if (item.isFile()) {
+          fs.copyFile(oldDirFile, newDirFile, (err) => {
+            if (err) throw err;
+          });
+        }
+      });
+    });
+  });
+};
+
+copyDir(dirAssets, dirBundle);
