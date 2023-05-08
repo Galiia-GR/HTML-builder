@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const fsPromises = fs.promises;
+
 
 const {stdout,exit} = process;
 
@@ -7,35 +9,30 @@ const direct = path.join(__dirname, 'files');
 const newDirect=path.join(__dirname, 'files-copy');
 
 
-function makeFolder() {
-  fs.mkdir((newDirect),{ recursive: false }, (err) => {
-    if (err) {
-      throw err;
-
-    }
-  });
-}
-
-fs.access(newDirect, (err) => {
-  if (err) {
-    stdout.write(`\n такая папка уже создана ${newDirect}`);
-    throw err;
-  }
-  else {
-    makeFolder();
-  }
+fsPromises.access(newDirect). then(function() {
+  stdout.write(`\n такая папка уже создана ${newDirect}`);
+  exit();
+}).catch(function() {
+  stdout.write('Создаю папку...\n');
 });
 
 
-fs.readdir(direct, (err, list)=>{
-  if (err) {
-    throw err;
-  }
-  list.forEach((el) => {
-    fs.copyFile((direct, el), (newDirect, el)), (err) => {
-      if (err) {
-        throw err;
-      }
-    };
+fsPromises.mkdir(newDirect, {recursive:true}). then(function() {
+
+  fs.readdir(direct, (err, files)=> {
+    files.forEach((el) => {
+      if (err) throw err;
+
+      fs.copyFile(
+        path.join(direct, el),
+        path.join(newDirect,el),
+        (err) => {
+          if (err) throw err;
+          console.log('Файл скопирован');
+        }
+      );
+    });
   });
+}).catch(function() {
+  console.log('Не удалось скопирвать файлы');
 });
