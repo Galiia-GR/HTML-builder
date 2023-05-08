@@ -80,3 +80,29 @@ const copyDir = (dirAssets, dirBundle) => {
 };
 
 copyDir(dirAssets, dirBundle);
+
+
+////work with html
+// const tempHtml = path.join(__dirname, 'template.html');
+// const compDirFile = path.join(__dirname, 'components');
+
+// let newTemplHtml = fs.readFile(tempHtml, 'utf8', (err) => {
+//   if (err) throw err;
+// });
+
+// newTemplHtml.forEach((el) => {
+//   if(el === tempHtml.matchAll(/{{(.*?)}}/g)) {
+//     const name = el[1];
+//     const newHtml = path.joun(compDirFile,`${name}.html`);
+
+//     const readHtml = fs.readFile(newHtml, 'utf-8');
+
+//     newTemplHtml = tempHtml.replace(el[0], readHtml);
+//   }
+// });
+
+// fs.writeFile(path.join(newDirect, 'index.html'), tempHtml, 'utf-8', (err)=>{
+//   if (err) throw err;
+
+
+
