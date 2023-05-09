@@ -46,6 +46,8 @@ function buildFile() {
     });
   });
 }
+
+
 //////copyAssets
 const dirBundle = path.join(__dirname, 'project-dist', 'assets');
 const dirAssets = path.join(__dirname, 'assets');
@@ -82,17 +84,47 @@ const copyDir = (dirAssets, dirBundle) => {
 copyDir(dirAssets, dirBundle);
 
 
+
+
 ////work with html
-//const tempHtml = path.join(__dirname, 'template.html');
+const streamOut = fs.createReadStream(
+  path.join(__dirname, 'template.html'),
+  'utf-8'
+);
+streamOut.on('data', (data) => {
+  template = data;
+});
+
+
 const compDirFile = path.join(__dirname, 'components');
 
-compDirFile.forEach((file) => {
-  fs.stat(path.join(__dirname, 'components', file), (err, el) => {
-    if (err) throw err;
+fs.readdir(compDirFile, (err, files) => {
+  if (err) throw err;
 
-    if(el.isFile() && path.basename(file, '').split('.')[1] === 'html') {
-      const fileInHtml = fs.createReadStream(path.join(__dirname, 'components', file), 'utf-8');
-      console.log(fileInHtml);
-    }
+  files.forEach((file) => {
+    fs.stat(path.join(__dirname, 'components', file), (err, el) => {
+      if (err) throw err;
+
+      if(el.isFile() && path.basename(file, '').split('.')[1] === 'html'){
+        let tag = path.basename(file, '').split('.')[0];
+        let name = path.basename(file, '');
+        console.log(tag, name);
+
+        fs.readFile(
+          path.join(__dirname, 'components', name),
+          'utf-8',
+          (err, files) => {
+            if (err) throw err;
+            template = template.replace(`{{${tag}}}`, `${files}`);
+            const streamIn = fs.createWriteStream(
+              path.join(__dirname, 'project-dist', 'index.html')
+            );
+            streamIn.write(template);
+            streamIn.close();
+          }
+        );
+      }
+    });
   });
 });
+
