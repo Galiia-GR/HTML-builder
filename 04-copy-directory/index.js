@@ -10,9 +10,8 @@ const newDirect=path.join(__dirname, 'files-copy');
 
 
 fsPromises.access(newDirect). then(function() {
-  stdout.write('Перезаписываю файлы...\n');
   fs.rmdir(newDirect, { recursive:true}, (err) => {
-    if(err) console.log ('Данная папка не обнаружена');
+    if(err) console.log ('Перезаписываю файлы...\n');
   });
   copyFile();
 }).catch(function() {
